@@ -1,0 +1,38 @@
+from music21 import harmony
+
+AVAILABLE_CHORDS = [
+    "Cmaj", "Dmin", "Emin", "Fmaj", "Gmaj", "Amin", "Bdim",
+    "C7", "D7", "E7", "F7", "G7", "A7", "B7",
+    "Cm", "Dm", "Em", "Fm", "Gm", "Am", "Bm"
+]
+
+def get_chord_notes(chord_name):
+    """
+    Given a chord name (e.g., 'Cmaj', 'Am7'), return the note names in the chord.
+    """
+    try:
+        chord_symbol = harmony.ChordSymbol(chord_name)
+        return [p.nameWithOctave for p in chord_symbol.pitches]
+    except Exception as e:
+        return f"Error: {e}"
+
+def main():
+    print("Welcome to the Chord Progression Note Finder!")
+    print("Here are some chords you can choose from:")
+    print(", ".join(AVAILABLE_CHORDS))
+    print("\nEnter a chord progression (e.g., Cmaj Gmaj Amin Fmaj).")
+    print("Separate each chord with a space.")
+    
+    progression = input("Chord Progression: ").strip()
+    chords = progression.split()
+    
+    print("\nHere are the notes for each chord in the progression:")
+    for chord_name in chords:
+        if chord_name not in AVAILABLE_CHORDS:
+            print(f"{chord_name}: Error - Chord not recognized or not in the available list.")
+        else:
+            notes = get_chord_notes(chord_name)
+            print(f"{chord_name}: {notes}")
+
+if __name__ == "__main__":
+    main()

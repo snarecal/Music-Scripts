@@ -1,0 +1,63 @@
+from music21 import harmony, chord, note
+
+AVAILABLE_CHORDS = [
+    "Cmaj", "Dmin", "Emin", "Fmaj", "Gmaj", "Amin", "Bdim",
+    "C7", "D7", "E7", "F7", "G7", "A7", "B7",
+    "Cm", "Dm", "Em", "Fm", "Gm", "Am", "Bm"
+]
+
+def get_chord_notes(chord_name):
+    """
+    Given a chord name (e.g., 'Cmaj', 'Am7'), return the note names in the chord.
+    """
+    try:
+        chord_symbol = harmony.ChordSymbol(chord_name)
+        return [p.nameWithOctave for p in chord_symbol.pitches]
+    except Exception as e:
+        return f"Error: {e}"
+
+def determine_chord_quality(notes):
+    """
+    Given a list of note names, determine the chord quality.
+    """
+    try:
+        input_chord = chord.Chord(notes)
+        return input_chord.commonName  # Returns the chord quality (e.g., "major triad", "minor seventh")
+    except Exception as e:
+        return f"Error: {e}"
+
+def main():
+    print("Welcome to the Chord Progression Note Finder!")
+    while True:
+        print("\nHere are some chords you can choose from:")
+        print(", ".join(AVAILABLE_CHORDS))
+        print("\nEnter a chord progression (e.g., Cmaj Gmaj Amin Fmaj).")
+        print("Separate each chord with a space.")
+        
+        progression = input("Chord Progression: ").strip()
+        chords = progression.split()
+        
+        print("\nHere are the notes for each chord in the progression:")
+        for chord_name in chords:
+            if chord_name not in AVAILABLE_CHORDS:
+                print(f"{chord_name}: Error - Chord not recognized or not in the available list.")
+            else:
+                notes = get_chord_notes(chord_name)
+                print(f"{chord_name}: {notes}")
+        
+        # Allow the user to enter notes to determine the chord quality
+        print("\nWould you like to determine the chord quality from a set of notes?")
+        determine = input("Enter 'yes' or 'no': ").strip().lower()
+        if determine in ["yes", "y"]:
+            notes_input = input("Enter the notes separated by spaces (e.g., C E G): ").strip().split()
+            chord_quality = determine_chord_quality(notes_input)
+            print(f"The chord quality for the notes {notes_input} is: {chord_quality}")
+        
+        # Ask if the user wants to continue or exit
+        continue_program = input("\nWould you like to enter another progression or determine another chord quality? (yes/no): ").strip().lower()
+        if continue_program not in ["yes", "y"]:
+            print("Thank you for using the Chord Progression Note Finder! Goodbye!")
+            break
+
+if __name__ == "__main__":
+    main()

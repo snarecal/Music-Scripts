@@ -1,0 +1,85 @@
+from music21 import harmony, scale
+
+AVAILABLE_CHORDS = [
+    "Cmaj", "Dmin", "Emin", "Fmaj", "Gmaj", "Amin", "Bdim",
+    "C7", "D7", "E7", "F7", "G7", "A7", "B7",
+    "Cm", "Dm", "Em", "Fm", "Gm", "Am", "Bm"
+]
+
+EXTENDED_CHORDS = [
+    "Cmaj7", "Dmin7", "Emin7", "Fmaj7", "G7", "Amin7", "Bmin7b5",
+    "C9", "D9", "E9", "F9", "G9", "A9", "B9",
+    "C11", "D11", "E11", "F11", "G11", "A11", "B11",
+    "C13", "D13", "E13", "F13", "G13", "A13", "B13"
+]
+
+def get_chord_notes(chord_name):
+    """
+    Given a chord name (e.g., 'Cmaj', 'Am7'), return the note names in the chord.
+    """
+    try:
+        chord_symbol = harmony.ChordSymbol(chord_name)
+        return [p.nameWithOctave for p in chord_symbol.pitches]
+    except Exception as e:
+        return f"Error: {e}"
+
+def get_scale_degrees(chord_name):
+    """
+    Given a chord name, return the scale degrees of the chord in the C major scale.
+    """
+    try:
+        chord_symbol = harmony.ChordSymbol(chord_name)
+        c_major_scale = scale.MajorScale('C')
+        degrees = []
+        for pitch in chord_symbol.pitches:
+            degree = c_major_scale.getScaleDegreeFromPitch(pitch)
+            degrees.append(f"{pitch.name}: {degree}")
+        return degrees
+    except Exception as e:
+        return f"Error: {e}"
+
+def main():
+    print("Welcome to the Chord Progression Note Finder!")
+    
+    while True:
+        # Ask if the user wants to include extended chords
+        use_extended = input("Would you like to include extended chords (e.g., Cmaj7, D9)? (yes/no): ").strip().lower()
+        if use_extended in ["yes", "y"]:
+            available_chords = AVAILABLE_CHORDS + EXTENDED_CHORDS
+            print("\nExtended chords have been added!")
+        else:
+            available_chords = AVAILABLE_CHORDS
+
+        print("\nHere are some chords you can choose from:")
+        print(", ".join(available_chords))
+        print("\nEnter a chord progression (e.g., Cmaj Gmaj Amin Fmaj).")
+        print("Separate each chord with a space.")
+        
+        progression = input("Chord Progression: ").strip()
+        chords = progression.split()
+        
+        print("\nHere are the notes for each chord in the progression:")
+        for chord_name in chords:
+            if chord_name not in available_chords:
+                print(f"{chord_name}: Error - Chord not recognized or not in the available list.")
+            else:
+                notes = get_chord_notes(chord_name)
+                print(f"{chord_name}: {notes}")
+        
+        # Ask if the user wants to see scale degrees
+        show_degrees = input("\nWould you like to see the scale degrees for these chords? (yes/no): ").strip().lower()
+        if show_degrees in ["yes", "y"]:
+            print("\nScale degrees for each chord:")
+            for chord_name in chords:
+                if chord_name in available_chords:
+                    degrees = get_scale_degrees(chord_name)
+                    print(f"{chord_name}: {', '.join(degrees)}")
+        
+        # Ask if the user wants to continue or exit
+        continue_program = input("\nWould you like to enter another progression? (yes/no): ").strip().lower()
+        if continue_program not in ["yes", "y"]:
+            print("Thank you for using the Chord Progression Note Finder! Goodbye!")
+            break
+
+if __name__ == "__main__":
+    main()
